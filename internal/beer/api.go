@@ -6,7 +6,7 @@ import (
 )
 
 // RegisterHandlers sets up the routing of the HTTP handlers.
-func RegisterHandlers(r *routing.RouteGroup, service Service, authHandler routing.Handler, logger log.Logger) {
+func RegisterHandlers(r *routing.RouteGroup, service Service, logger log.Logger) {
 	res := resource{service, logger}
 
 

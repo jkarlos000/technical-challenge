@@ -9,7 +9,6 @@ import (
 	"github.com/go-ozzo/ozzo-routing/v2"
 	"github.com/go-ozzo/ozzo-routing/v2/content"
 	"github.com/go-ozzo/ozzo-routing/v2/cors"
-	"github.com/jkarlos000/technical-challenge/internal/auth"
 	"github.com/jkarlos000/technical-challenge/internal/beer"
 	"github.com/jkarlos000/technical-challenge/internal/config"
 	"github.com/jkarlos000/technical-challenge/internal/errors"
@@ -85,16 +84,8 @@ func buildHandler(logger log.Logger, db *dbcontext.DB, cfg *config.Config) http.
 
 	rg := router.Group("/v1")
 
-	authHandler := auth.Handler(cfg.JWTSigningKey)
-
-
 	beer.RegisterHandlers(rg.Group(""),
 		beer.NewService(beer.NewRepository(db, logger), logger),
-		authHandler, logger,
-	)
-
-	auth.RegisterHandlers(rg.Group(""),
-		auth.NewService(cfg.JWTSigningKey, cfg.JWTExpiration, logger),
 		logger,
 	)
 
