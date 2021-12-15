@@ -22,3 +22,9 @@ testdata/postgres
 
 # PID file generated to support live reload
 .pid
+
+# IDE path configurations
+.idea
+
+#config folder and files
+config/local.yml
