@@ -6,7 +6,7 @@ import (
 	"fmt"
 	routing "github.com/go-ozzo/ozzo-routing/v2"
 	validation "github.com/go-ozzo/ozzo-validation/v4"
-	"github.com/qiangxue/go-rest-api/pkg/log"
+	"github.com/jkarlos000/technical-challenge/pkg/log"
 	"net/http"
 	"runtime/debug"
 )

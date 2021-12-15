@@ -9,14 +9,15 @@ import (
 	"github.com/go-ozzo/ozzo-routing/v2"
 	"github.com/go-ozzo/ozzo-routing/v2/content"
 	"github.com/go-ozzo/ozzo-routing/v2/cors"
+	"github.com/jkarlos000/technical-challenge/internal/auth"
+	"github.com/jkarlos000/technical-challenge/internal/beer"
+	"github.com/jkarlos000/technical-challenge/internal/config"
+	"github.com/jkarlos000/technical-challenge/internal/errors"
+	"github.com/jkarlos000/technical-challenge/internal/healthcheck"
+	"github.com/jkarlos000/technical-challenge/pkg/accesslog"
+	"github.com/jkarlos000/technical-challenge/pkg/dbcontext"
+	"github.com/jkarlos000/technical-challenge/pkg/log"
 	_ "github.com/lib/pq"
-	"github.com/qiangxue/go-rest-api/internal/auth"
-	"github.com/qiangxue/go-rest-api/internal/config"
-	"github.com/qiangxue/go-rest-api/internal/errors"
-	"github.com/qiangxue/go-rest-api/internal/healthcheck"
-	"github.com/qiangxue/go-rest-api/pkg/accesslog"
-	"github.com/qiangxue/go-rest-api/pkg/dbcontext"
-	"github.com/qiangxue/go-rest-api/pkg/log"
 	"net/http"
 	"os"
 	"time"
@@ -83,6 +84,14 @@ func buildHandler(logger log.Logger, db *dbcontext.DB, cfg *config.Config) http.
 	healthcheck.RegisterHandlers(router, Version)
 
 	rg := router.Group("/v1")
+
+	authHandler := auth.Handler(cfg.JWTSigningKey)
+
+
+	beer.RegisterHandlers(rg.Group(""),
+		beer.NewService(beer.NewRepository(db, logger), logger),
+		authHandler, logger,
+	)
 
 	auth.RegisterHandlers(rg.Group(""),
 		auth.NewService(cfg.JWTSigningKey, cfg.JWTExpiration, logger),

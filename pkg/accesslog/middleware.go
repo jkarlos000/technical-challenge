@@ -4,7 +4,7 @@ package accesslog
 import (
 	routing "github.com/go-ozzo/ozzo-routing/v2"
 	"github.com/go-ozzo/ozzo-routing/v2/access"
-	"github.com/qiangxue/go-rest-api/pkg/log"
+	"github.com/jkarlos000/technical-challenge/pkg/log"
 	"net/http"
 	"time"
 )

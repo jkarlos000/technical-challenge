@@ -5,8 +5,8 @@ import (
 	"github.com/dgrijalva/jwt-go"
 	routing "github.com/go-ozzo/ozzo-routing/v2"
 	"github.com/go-ozzo/ozzo-routing/v2/auth"
-	"github.com/qiangxue/go-rest-api/internal/entity"
-	"github.com/qiangxue/go-rest-api/internal/errors"
+	"github.com/jkarlos000/technical-challenge/internal/entity"
+	"github.com/jkarlos000/technical-challenge/internal/errors"
 	"net/http"
 )
 
