@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package currency.v1;
+
+option go_package = "github.com/jkarlos000/technical-challenge/currency/api/proto/v1";
+
+message Request {
+    string base = 1;
+    string destination = 2;
+}
+
+message Response {
+    float price = 1;
+}
+
+service Currency {
+    rpc GetPrice(Request) returns (Response) {}
+    rpc GetPriceStream(Request) returns (stream Response) {}
+}

@@ -1,4 +1,4 @@
-dsn: "postgres://127.0.0.1/beer?sslmode=disable&user=postgres&password=postgres"
+dsn: "postgres://beer/beer?sslmode=disable&user=postgres&password=postgres"
 jwt_signing_key: "LxsKJywDL5O5PvgODZhBH12KE6k2yL8E"
 migration_url: "file://migrations"
 currency_service: "127.0.0.1:9091"
