@@ -2,7 +2,7 @@ package entity
 
 import "time"
 
-// Beer represents an beer record.
+// Beer represents a beer record.
 type Beer struct {
 	ID        int       `json:"id" db:"beer_id"`
 	Name      string    `json:"name" db:"name"`

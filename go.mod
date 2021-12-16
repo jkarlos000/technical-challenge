@@ -3,7 +3,7 @@ module github.com/jkarlos000/technical-challenge
 go 1.16
 
 require (
-	github.com/dgrijalva/jwt-go v3.2.0+incompatible
+	github.com/biter777/countries v1.3.4
 	github.com/go-ozzo/ozzo-dbx v1.5.0
 	github.com/go-ozzo/ozzo-routing/v2 v2.4.0
 	github.com/go-ozzo/ozzo-validation/v4 v4.3.0
