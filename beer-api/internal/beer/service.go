@@ -8,6 +8,7 @@ import (
 	"github.com/jkarlos000/technical-challenge/beer-api/internal/entity"
 	"github.com/jkarlos000/technical-challenge/beer-api/internal/errors"
 	"github.com/jkarlos000/technical-challenge/beer-api/pkg/log"
+	"math"
 	"strings"
 	"time"
 )
@@ -53,7 +54,7 @@ func (m CreateBeerRequest) Validate() error {
 
 // BeerBox represents the data about a price of beer box.
 type BeerBox struct {
-	PriceTotal float32 `json:"price_total"`
+	PriceTotal float64 `json:"price_total"`
 }
 
 type service struct {
@@ -75,7 +76,20 @@ func (s service) Get(ctx context.Context, id int) (BeerItem, error) {
 }
 
 func (s service) GetPrice(ctx context.Context, id int, currency string, quantity uint32) (BeerBox, error) {
-	panic("implement me")
+	var beer BeerItem
+	var err error
+	if quantity == 0 || quantity < 0 {
+		quantity = 6
+	}
+	if beer, err = s.Get(ctx, id); err != nil {
+		return BeerBox{}, err
+	}
+	rate, err := s.repo.GetPrice(ctx, id, beer.Currency, currency)
+	if err != nil {
+		return BeerBox{}, err
+	}
+	xrate := math.Floor(float64(rate)*100)/100
+	return BeerBox{PriceTotal: float64(quantity) * xrate}, nil
 }
 
 func (s service) Create(ctx context.Context, req CreateBeerRequest) (BeerItem, error) {

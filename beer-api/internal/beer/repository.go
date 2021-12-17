@@ -6,6 +6,7 @@ import (
 	"github.com/jkarlos000/technical-challenge/beer-api/internal/errors"
 	"github.com/jkarlos000/technical-challenge/beer-api/pkg/dbcontext"
 	"github.com/jkarlos000/technical-challenge/beer-api/pkg/log"
+	protos "github.com/jkarlos000/technical-challenge/currency/api/proto/v1"
 	"github.com/lib/pq"
 )
 
@@ -29,13 +30,15 @@ type Repository interface {
 
 // repository persists users in database
 type repository struct {
+	cc		protos.CurrencyClient
 	db     *dbcontext.DB
 	logger log.Logger
+
 }
 
 // NewRepository creates a new beer repository
-func NewRepository(db *dbcontext.DB, logger log.Logger) Repository {
-	return repository{db, logger}
+func NewRepository(cc protos.CurrencyClient,db *dbcontext.DB, logger log.Logger) Repository {
+	return repository{cc,db, logger}
 }
 
 func (r repository) Get(ctx context.Context, id int) (entity.Beer, error) {
@@ -78,7 +81,19 @@ func (r repository) Create(ctx context.Context, beer entity.Beer) (int, error) {
 }
 
 func (r repository) GetPrice(ctx context.Context, id int, srcCurrency, dstCurrency string) (float32, error) {
-	panic("Microservice consume here!")
+	var err error
+	if _, err = r.Get(ctx, id); err != nil {
+		return 0.0, err
+	}
+	rr := &protos.Request{
+		Base:        srcCurrency,
+		Destination: dstCurrency,
+	}
+	var rate *protos.Response
+	if rate, err = r.cc.GetPrice(ctx, rr); err != nil {
+		return 0.0, err
+	}
+	return rate.Rate, nil
 }
 
 func (r repository) Update(ctx context.Context, beer entity.Beer) error {

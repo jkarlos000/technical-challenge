@@ -12,6 +12,7 @@ const (
 	defaultServerPort         = 8080
 	defaultJWTExpirationHours = 72
 	defaultMigrationURL       = "file://migrations"
+	defaultCurrencyService    = "localhost:9091"
 )
 
 // Config represents an application configuration.
@@ -26,6 +27,8 @@ type Config struct {
 	JWTExpiration int `yaml:"jwt_expiration" env:"JWT_EXPIRATION"`
 	// Migration URL source
 	MigrationURL string `yaml:"migration_url" env:"migration_url"`
+	// CurrencyService server and port
+	CurrencyService string `yaml:"currency_service" env:"currency_service"`
 }
 
 // Validate validates the application configuration.
@@ -40,9 +43,10 @@ func (c Config) Validate() error {
 func Load(file string, logger log.Logger) (*Config, error) {
 	// default config
 	c := Config{
-		ServerPort:    defaultServerPort,
-		JWTExpiration: defaultJWTExpirationHours,
-		MigrationURL:  defaultMigrationURL,
+		ServerPort:      defaultServerPort,
+		JWTExpiration:   defaultJWTExpirationHours,
+		MigrationURL:    defaultMigrationURL,
+		CurrencyService: defaultCurrencyService,
 	}
 
 	// load from YAML config file

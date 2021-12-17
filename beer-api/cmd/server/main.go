@@ -19,7 +19,9 @@ import (
 	"github.com/jkarlos000/technical-challenge/beer-api/pkg/accesslog"
 	"github.com/jkarlos000/technical-challenge/beer-api/pkg/dbcontext"
 	"github.com/jkarlos000/technical-challenge/beer-api/pkg/log"
+	protos "github.com/jkarlos000/technical-challenge/currency/api/proto/v1"
 	_ "github.com/lib/pq"
+	"google.golang.org/grpc"
 	"net/http"
 	"os"
 	"time"
@@ -67,11 +69,19 @@ func main() {
 		logger.Error(err)
 	}
 
+	// make grpc Dials
+	conn, err := grpc.Dial(cfg.CurrencyService, grpc.WithInsecure())
+	if err != nil {
+		panic(err)
+	}
+
+	defer conn.Close()
+
 	// build HTTP server
 	address := fmt.Sprintf(":%v", cfg.ServerPort)
 	hs := &http.Server{
 		Addr:    address,
-		Handler: buildHandler(logger, dbcontext.New(db), cfg),
+		Handler: buildHandler(logger, dbcontext.New(db), cfg, conn),
 	}
 
 	// start the HTTP server with graceful shutdown
@@ -84,7 +94,7 @@ func main() {
 }
 
 // buildHandler sets up the HTTP routing and builds an HTTP handler.
-func buildHandler(logger log.Logger, db *dbcontext.DB, cfg *config.Config) http.Handler {
+func buildHandler(logger log.Logger, db *dbcontext.DB, cfg *config.Config, conn *grpc.ClientConn) http.Handler {
 	router := routing.New()
 
 	router.Use(
@@ -99,7 +109,7 @@ func buildHandler(logger log.Logger, db *dbcontext.DB, cfg *config.Config) http.
 	rg := router.Group("/v1")
 
 	beer.RegisterHandlers(rg.Group(""),
-		beer.NewService(beer.NewRepository(db, logger), logger),
+		beer.NewService(beer.NewRepository(protos.NewCurrencyClient(conn), db, logger), logger),
 		logger,
 	)
 

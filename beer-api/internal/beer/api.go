@@ -13,8 +13,9 @@ import (
 // RegisterHandlers sets up the routing of the HTTP handlers.
 func RegisterHandlers(r *routing.RouteGroup, service Service, logger log.Logger) {
 	res := resource{service, logger}
-	r.Get("/beers/<id>", res.searchBeerById)
+
 	r.Get("/beers/<id>/boxprice", res.boxBeerPriceById)
+	r.Get("/beers/<id>", res.searchBeerById)
 	r.Get("/beers", res.searchBeers)
 	r.Post("/beers", res.addBeers)
 }
@@ -34,12 +35,21 @@ func (r resource) searchBeerById(c *routing.Context) error {
 	if err != nil {
 		return err
 	}
-
 	return c.Write(beer)
 }
 
 func (r resource) boxBeerPriceById(c *routing.Context) error {
-	panic("implement me")
+	currency := c.Query("currency")
+	quantity, _ := strconv.Atoi(c.Query("quantity"))
+	var id int
+	if id, _ = strconv.Atoi(c.Param("id")); id == 0 {
+		return errors.BadRequest("")
+	}
+	beerBox, err := r.service.GetPrice(c.Request.Context(), id, currency, uint32(quantity))
+	if err != nil {
+		return err
+	}
+	return c.Write(beerBox)
 }
 
 func (r resource) searchBeers(c *routing.Context) error {

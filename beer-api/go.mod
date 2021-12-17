@@ -9,9 +9,11 @@ require (
 	github.com/go-ozzo/ozzo-validation/v4 v4.3.0
 	github.com/golang-migrate/migrate/v4 v4.15.1
 	github.com/google/uuid v1.3.0
+	github.com/jkarlos000/technical-challenge/currency v0.0.0-20211217035213-8de8fae708f9
 	github.com/lib/pq v1.10.4
 	github.com/qiangxue/go-env v1.0.1
 	github.com/stretchr/testify v1.7.0
 	go.uber.org/zap v1.19.1
+	google.golang.org/grpc v1.41.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0
 )
