@@ -3,12 +3,12 @@ package currency
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"github.com/jkarlos000/technical-challenge/currency/internal/entity"
 	"github.com/jkarlos000/technical-challenge/currency/pkg/dbcontext"
 	"github.com/jkarlos000/technical-challenge/currency/pkg/log"
 	"io/ioutil"
 	"net/http"
-	"reflect"
 	"time"
 )
 
@@ -219,7 +219,26 @@ func NewRepository(db *dbcontext.DB, logger log.Logger, apikeyDSN string) Reposi
 }
 
 func (r repository) Get(ctx context.Context, base, destination string) (entity.Currency, error) {
-	panic("implement me")
+	var currency entity.Currency
+	query := fmt.Sprintf("SELECT * FROM currencies c WHERE c.base='%v' and c.destination='%v'", base, destination)
+	q := r.db.With(ctx).NewQuery(query)
+	err := q.One(&currency)
+
+	if len(currency.Base) == 0 && len(currency.Destination) == 0 {
+		if err := r.addCurrency(ctx, base, destination); err != nil {
+			return entity.Currency{}, err
+		}
+	}
+	if  int(time.Now().Sub(*currency.UpdatedAt).Minutes()) >= 30 {
+		if base != "USD" {
+			if destination != "USD"{
+				if err = r.updateCurrency(ctx, base, destination); err != nil {
+					return entity.Currency{}, err
+				}
+			}
+		}
+	}
+	return currency, err
 }
 
 func (r repository) Count(ctx context.Context) (int, error) {
@@ -249,12 +268,12 @@ func (r repository) MonitorRates(ctx context.Context, interval time.Duration) ch
 	url := Url + ApiKey
 
 	go func() {
-		ticker := time.NewTicker(interval)
+		ticker := time.NewTicker(100 * time.Millisecond)
 		for {
 			select {
 			case <-ticker.C:
 				var netClient = &http.Client{
-					Timeout: time.Second * 10,
+					Timeout: time.Second * 120,
 				}
 				response, err := netClient.Get(url)
 				if err != nil {
@@ -265,91 +284,22 @@ func (r repository) MonitorRates(ctx context.Context, interval time.Duration) ch
 				json.Unmarshal(buf, &currencyRates)
 				// Use json.Decode for reading streams of JSON data
 				if err := json.NewDecoder(response.Body).Decode(&currencyRates); err != nil {
-					r.logger.Error(err)
-					response.Body.Close()
-					ret <- struct{}{}
+					if err.Error() != "EOF" {
+						r.logger.Error(err)
+						response.Body.Close()
+						ret <- struct{}{}
+					}
 				}
-				r.logger.Info("Updating rates values from currencylayer")
+				r.registerNewRates(ctx, currencyRates)
+				r.logger.Info("Updating rates values from CurrencyLayer")
 				ret <- struct{}{}
 				response.Body.Close()
+				ticker.Reset(interval)
+			case <-ctx.Done():
+				close(ret)
+				return
 			}
 		}
 	}()
 	return ret
 }
-
-func (r repository) registerRates(ctx context.Context, rates Currencylayer) {
-	if count, err := r.Count(ctx); count == 0 {
-		if err != nil {
-			return
-		}
-		v := reflect.Indirect(reflect.ValueOf(rates.Quotes))
-
-		for i := 0; i < v.NumField(); i++ {
-			r.addCurrency(ctx, v.Type().Field(i).Name, v.Field(i).Interface().(float32))
-		}
-	} else {
-		if err != nil {
-			return
-		}
-		v := reflect.Indirect(reflect.ValueOf(rates.Quotes))
-
-		for i := 0; i < v.NumField(); i++ {
-			r.updateCurrency(ctx, v.Type().Field(i).Name, v.Field(i).Interface().(float32))
-		}
-	}
-}
-
-func (r repository) addCurrency(ctx context.Context, currency string, rate float32) {
-	if len(currency) != 6 {
-		return
-	}
-	now := time.Now()
-	currencies := entity.Currency{
-		Base:        "USD",
-		Destination: currency[3:],
-		Rate:        rate,
-		UpdatedAt:   &now,
-	}
-	if err := r.Update(ctx, currencies); err != nil {
-		return
-	}
-	currencies = entity.Currency{
-		Base:        currency[3:],
-		Destination: "USD",
-		Rate:        1/rate,
-		UpdatedAt:   &now,
-	}
-	if err := r.Update(ctx, currencies); err != nil {
-		return
-	}
-}
-
-func (r repository) updateCurrency(ctx context.Context, currency string, rate float32) {
-	if len(currency) != 6 {
-		return
-	}
-	now := time.Now()
-	currencies := entity.Currency{
-		Base:        "USD",
-		Destination: currency[3:],
-		Rate:        rate,
-		CreatedAt:   now,
-		UpdatedAt:   &now,
-	}
-	if err := r.Create(ctx, currencies); err != nil {
-		return
-	}
-	currencies = entity.Currency{
-		Base:        currency[3:],
-		Destination: "USD",
-		Rate:        1/rate,
-		CreatedAt:   now,
-		UpdatedAt:   &now,
-	}
-	if err := r.Create(ctx, currencies); err != nil {
-		return
-	}
-}
-
-

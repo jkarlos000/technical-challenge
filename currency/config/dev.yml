@@ -1,5 +1,5 @@
 dsn: "postgres://postgres-currency:54321/currency?sslmode=disable&user=postgres&password=postgres"
 jwt_signing_key: "LxsKJywDL5O5PvgODZhBH12KE6k2yL8E"
 migration_url: "file://migrations"
-currency_service: "127.0.0.1:9091"
+server_port: 9091
 currencylayer_api_key: ""
