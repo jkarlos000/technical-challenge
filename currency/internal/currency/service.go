@@ -58,7 +58,7 @@ func (s service) GetPriceStream(request *proto.Request, server proto.Currency_Ge
 }
 
 func (s service) handleRatesUpdate() {
-	update := s.repo.MonitorRates(s.ctx, 2*time.Minute)
+	update := s.repo.MonitorRates(s.ctx, 30*time.Minute)
 	for range update {
 	}
 }
