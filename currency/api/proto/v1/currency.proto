@@ -10,7 +10,7 @@ message Request {
 }
 
 message Response {
-    float price = 1;
+    float rate = 1;
 }
 
 service Currency {

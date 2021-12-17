@@ -26,6 +26,8 @@ type Config struct {
 	JWTExpiration int `yaml:"jwt_expiration" env:"JWT_EXPIRATION"`
 	// Migration URL source
 	MigrationURL string `yaml:"migration_url" env:"migration_url"`
+	// CurrencyLayerApiKey api key
+	CurrencyLayerApiKey string `yaml:"currencylayer_api_key" env:"currencylayer_api_key"`
 }
 
 // Validate validates the application configuration.
