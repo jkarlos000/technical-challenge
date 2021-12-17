@@ -62,7 +62,7 @@ func main() {
 		panic(err)
 	}
 
-	// Migrate all the way up ...
+	// Migrate all the way up
 	if err := m.Up(); err != nil && err != migrate.ErrNoChange {
 		logger.Error(err)
 	}

@@ -225,8 +225,12 @@ func (r repository) Get(ctx context.Context, base, destination string) (entity.C
 	err := q.One(&currency)
 
 	if len(currency.Base) == 0 && len(currency.Destination) == 0 {
-		if err := r.addCurrency(ctx, base, destination); err != nil {
-			return entity.Currency{}, err
+		if err := r.addCurrency(ctx, base, destination); err == nil {
+			newCurr, er := r.Get(ctx, base, destination)
+			if er != nil {
+				return entity.Currency{}, er
+			}
+			return newCurr, nil
 		}
 	}
 	if  int(time.Now().Sub(*currency.UpdatedAt).Minutes()) >= 30 {
@@ -238,7 +242,7 @@ func (r repository) Get(ctx context.Context, base, destination string) (entity.C
 			}
 		}
 	}
-	return currency, err
+	return currency, nil
 }
 
 func (r repository) Count(ctx context.Context) (int, error) {

@@ -78,6 +78,9 @@ func (s service) Get(ctx context.Context, id int) (BeerItem, error) {
 func (s service) GetPrice(ctx context.Context, id int, currency string, quantity uint32) (BeerBox, error) {
 	var beer BeerItem
 	var err error
+	if err = validation.Validate(currency, is.CurrencyCode); err != nil {
+		return BeerBox{}, errors.BadRequest("The currency specified is not a valid Currency Code")
+	}
 	if quantity == 0 || quantity < 0 {
 		quantity = 6
 	}
