@@ -147,5 +147,5 @@ func Test_service_CRUD(t *testing.T) {
 	assert.Nil(t, err)
 	repo.GetPriceReturns(0.00, errors2.New("problems with data repository"))
 	_, err = s.GetPrice(ctx, 1, "BOB", 0)
-	assert.Nil(t, err)
+	assert.NotNil(t, err)
 }

@@ -3,11 +3,21 @@ package main
 import (
 	"context"
 	"fmt"
+	"github.com/jkarlos000/technical-challenge/beer-api/internal/config"
+	"github.com/jkarlos000/technical-challenge/beer-api/internal/test"
 	"github.com/jkarlos000/technical-challenge/beer-api/pkg/log"
 	"github.com/stretchr/testify/assert"
 	"testing"
 	"time"
 )
+
+func Test_buildHandler(t *testing.T) {
+	logger, _ := log.NewForTest()
+	db := test.DB(t)
+	cfg, _ := config.Load(*flagConfig, logger)
+	buildHandler(logger, db, cfg, nil)
+
+}
 
 func Test_logDBQuery(t *testing.T) {
 	logger, entries := log.NewForTest()
