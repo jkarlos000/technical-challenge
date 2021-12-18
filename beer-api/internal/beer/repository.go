@@ -23,9 +23,9 @@ type Repository interface {
 	// GetPrice returns the price of beer box relative to currency
 	GetPrice(ctx context.Context, id int, srcCurrency, dstCurrency string) (float32, error)
 	// Update updates the beer with given ID in the storage.
-	Update(ctx context.Context, beer entity.Beer) error
+	// Update(ctx context.Context, beer entity.Beer) error
 	// Delete removes the beer with given ID from the storage.
-	Delete(ctx context.Context, id int) error
+	// Delete(ctx context.Context, id int) error
 }
 
 // repository persists users in database
@@ -95,12 +95,3 @@ func (r repository) GetPrice(ctx context.Context, id int, srcCurrency, dstCurren
 	}
 	return rate.Rate, nil
 }
-
-func (r repository) Update(ctx context.Context, beer entity.Beer) error {
-	panic("implement me")
-}
-
-func (r repository) Delete(ctx context.Context, id int) error {
-	panic("implement me")
-}
-

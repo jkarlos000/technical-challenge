@@ -2,10 +2,10 @@ package test
 
 import (
 	dbx "github.com/go-ozzo/ozzo-dbx"
-	_ "github.com/lib/pq" // initialize posgresql for test
 	"github.com/jkarlos000/technical-challenge/beer-api/internal/config"
 	"github.com/jkarlos000/technical-challenge/beer-api/pkg/dbcontext"
 	"github.com/jkarlos000/technical-challenge/beer-api/pkg/log"
+	_ "github.com/lib/pq" // initialize postgres for test
 	"path"
 	"runtime"
 	"testing"

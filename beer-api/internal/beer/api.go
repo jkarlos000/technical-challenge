@@ -10,6 +10,15 @@ import (
 	"strconv"
 )
 
+//go:generate go run github.com/maxbrunsfeld/counterfeiter/v6 -generate
+
+//counterfeiter:generate -o beertesting/fake_service.gen.go . Service
+//counterfeiter:generate -o beertesting/fake_repository.gen.go . Repository
+
+// api fakes
+//counterfeiter:generate -o internal/test/apifakes/beer-apifakes github.com/jkarlos000/technical-challenge/currency/api/proto/v1.CurrencyClient
+
+
 // RegisterHandlers sets up the routing of the HTTP handlers.
 func RegisterHandlers(r *routing.RouteGroup, service Service, logger log.Logger) {
 	res := resource{service, logger}
@@ -52,6 +61,21 @@ func (r resource) boxBeerPriceById(c *routing.Context) error {
 	return c.Write(beerBox)
 }
 
+// swagger:route GET /beers cerveza searchBeers
+//
+// Lista todas las cervezas
+// Lista todas las cervezas que se encuentran en la base de datos
+//
+//     Consumes:
+//     - application/json
+//
+//     Produces:
+//     - application/json
+//
+//     Schemes: http, https
+//
+//     Responses:
+//       200: []BeerItem
 func (r resource) searchBeers(c *routing.Context) error {
 	ctx := c.Request.Context()
 	filters := make(map[string]interface{})

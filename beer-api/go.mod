@@ -11,6 +11,7 @@ require (
 	github.com/google/uuid v1.3.0
 	github.com/jkarlos000/technical-challenge/currency v0.0.0-20211217035213-8de8fae708f9
 	github.com/lib/pq v1.10.4
+	github.com/maxbrunsfeld/counterfeiter/v6 v6.4.1 // indirect
 	github.com/qiangxue/go-env v1.0.1
 	github.com/stretchr/testify v1.7.0
 	go.uber.org/zap v1.19.1
