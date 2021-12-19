@@ -59,7 +59,9 @@ jobs:
           go get github.com/mattn/goveralls
           go get golang.org/x/lint/golint
           go install google.golang.org/grpc
+          go get github.com/go-swagger/go-swagger/cmd/swagger
           GO111MODULE=on go install github.com/go-swagger/go-swagger/cmd/swagger
+          go get github.com/maxbrunsfeld/counterfeiter
           GO111MODULE=on go install github.com/maxbrunsfeld/counterfeiter
       
       - name: Get dependencies
@@ -73,7 +75,9 @@ jobs:
           go get github.com/mattn/goveralls
           go get golang.org/x/lint/golint
           go install google.golang.org/grpc
+          go get github.com/go-swagger/go-swagger/cmd/swagger
           GO111MODULE=on go install github.com/go-swagger/go-swagger/cmd/swagger
+          go get github.com/maxbrunsfeld/counterfeiter
           GO111MODULE=on go install github.com/maxbrunsfeld/counterfeiter
 
 
