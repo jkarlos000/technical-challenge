@@ -26,8 +26,5 @@ testdata/postgres
 # IDE path configurations
 .idea
 
-# config folder and files
-config/local.yml
-
 # Others files
 .DS_Store
