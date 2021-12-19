@@ -62,6 +62,7 @@ func main() {
 		}
 	}()
 
+	// setup migrate
 	m, err := migrate.New(cfg.MigrationURL, cfg.DSN)
 	if err != nil {
 		logger.Error(err)
