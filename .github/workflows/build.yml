@@ -59,8 +59,8 @@ jobs:
           go get github.com/mattn/goveralls
           go get golang.org/x/lint/golint
           go install google.golang.org/grpc
-          GO111MODULE=off go install github.com/go-swagger/go-swagger/cmd/swagger
-          GO111MODULE=off go install github.com/maxbrunsfeld/counterfeiter
+          GO111MODULE=on go install github.com/go-swagger/go-swagger/cmd/swagger
+          GO111MODULE=on go install github.com/maxbrunsfeld/counterfeiter
       
       - name: Get dependencies
         if: steps.filter.outputs.beer-api == 'true'
@@ -73,8 +73,8 @@ jobs:
           go get github.com/mattn/goveralls
           go get golang.org/x/lint/golint
           go install google.golang.org/grpc
-          GO111MODULE=off go install github.com/go-swagger/go-swagger/cmd/swagger
-          GO111MODULE=off go install github.com/maxbrunsfeld/counterfeiter
+          GO111MODULE=on go install github.com/go-swagger/go-swagger/cmd/swagger
+          GO111MODULE=on go install github.com/maxbrunsfeld/counterfeiter
 
 
       - name: Run go lint
