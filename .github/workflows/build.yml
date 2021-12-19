@@ -141,18 +141,16 @@ jobs:
 
       - name: Upload coverage to Codecov
         if: steps.filter.outputs.currency == 'true'
-        working-directory: currency
         uses: codecov/codecov-action@v1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          file: ./coverage-all.out
+          file: ./currency/coverage-all.out
           run: bash <(curl -s https://codecov.io/bash)
       
       - name: Upload coverage to Codecov
         if: steps.filter.outputs.beer-api == 'true'
-        working-directory: beer-api
         uses: codecov/codecov-action@v1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          file: ./coverage-all.out
+          file: ./beer-api/coverage-all.out
           run:  bash <(curl -s https://codecov.io/bash)
