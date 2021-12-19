@@ -29,8 +29,5 @@ testdata/postgres
 # config folder and files
 config/local.yml
 
-# CodeCov files
-*
-
 # Others files
 .DS_Store
