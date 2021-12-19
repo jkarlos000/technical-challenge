@@ -61,8 +61,6 @@ jobs:
           go install google.golang.org/grpc
           go get github.com/go-swagger/go-swagger/cmd/swagger
           GO111MODULE=on go install github.com/go-swagger/go-swagger/cmd/swagger
-          go get github.com/maxbrunsfeld/counterfeiter
-          GO111MODULE=on go install github.com/maxbrunsfeld/counterfeiter
       
       - name: Get dependencies
         if: steps.filter.outputs.beer-api == 'true'
@@ -77,8 +75,6 @@ jobs:
           go install google.golang.org/grpc
           go get github.com/go-swagger/go-swagger/cmd/swagger
           GO111MODULE=on go install github.com/go-swagger/go-swagger/cmd/swagger
-          go get github.com/maxbrunsfeld/counterfeiter
-          GO111MODULE=on go install github.com/maxbrunsfeld/counterfeiter
 
 
       - name: Run go lint
@@ -91,12 +87,12 @@ jobs:
         working-directory: beer-api
         run: make lint
       
-      - name: Run go lint
+      - name: Run go generate
         if: steps.filter.outputs.currency == 'true'
         working-directory: currency
         run: go generate ./...
 
-      - name: Run go lint
+      - name: Run go generate
         if: steps.filter.outputs.beer-api == 'true'
         working-directory: beer-api
         run: go generate ./...
