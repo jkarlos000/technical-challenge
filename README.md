@@ -2,9 +2,12 @@
 
 El siguiente repositorio es parte de una prueba técnica, se cuentan con 2 carpetas en las cuales esta debidamente implementado cada servicio.
 
-beer-api es una API Rest que puede ser consumida por cualquier usuario.
+## Services
 
-currency es un microservicio que se alimenta de fuente de datos externas y almacena cierta información que obtiene de esta misma.
+### Beer API [./beer-api](./beer-api)
+beer-api es un RESTful Go basado en JSON API  que puede ser consumida por cualquier usuario.
+### Currency [./currency](./currency)
+gRPC es un servicio que soporta metodos unilateral y streaming, currency es un microservicio que se alimenta de fuente de datos externas y almacena cierta información que obtiene de esta misma.
 
 
 ## Problema
