@@ -30,6 +30,7 @@ Issue #
 - [ ] Firefox
 - [ ] Safari
 - [ ] Internet Explorer
+- [ ] Postman
 - [ ] Other
 
 ### What operating system was this tested in?
