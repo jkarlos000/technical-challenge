@@ -16,7 +16,7 @@ import (
 //counterfeiter:generate -o beertesting/fake_repository.gen.go . Repository
 
 // api fakes
-//counterfeiter:generate -o internal/test/apifakes/beer-apifakes github.com/jkarlos000/technical-challenge/currency/api/proto/v1.CurrencyClient
+//counterfeiter:generate -o ../test/apifakes/beer-apifakes github.com/jkarlos000/technical-challenge/currency/api/proto/v1.CurrencyClient
 
 // RegisterHandlers sets up the routing of the HTTP handlers.
 func RegisterHandlers(r *routing.RouteGroup, service Service, logger log.Logger) {

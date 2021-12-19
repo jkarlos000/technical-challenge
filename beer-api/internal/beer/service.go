@@ -70,6 +70,7 @@ func NewService(repo Repository, logger log.Logger) Service {
 	return service{repo, logger}
 }
 
+// Get returns the beer with the specified the beer ID.
 func (s service) Get(ctx context.Context, id int) (BeerItem, error) {
 	album, err := s.repo.Get(ctx, id)
 	if err != nil {
@@ -78,6 +79,7 @@ func (s service) Get(ctx context.Context, id int) (BeerItem, error) {
 	return BeerItem{album}, nil
 }
 
+// GetPrice returns the beer box price of beer ID, depend of quantity of beers and currency rate exchange.
 func (s service) GetPrice(ctx context.Context, id int, currency string, quantity uint32) (BeerBox, error) {
 	var beer BeerItem
 	var err error
@@ -98,6 +100,7 @@ func (s service) GetPrice(ctx context.Context, id int, currency string, quantity
 	return BeerBox{PriceTotal: float64(quantity) * xrate}, nil
 }
 
+// Create creates a new beer.
 func (s service) Create(ctx context.Context, req CreateBeerRequest) (BeerItem, error) {
 	req.Country = strings.TrimSpace(req.Country)
 	req.Name = strings.TrimSpace(req.Name)
@@ -127,6 +130,7 @@ func (s service) Create(ctx context.Context, req CreateBeerRequest) (BeerItem, e
 	return s.Get(ctx, id)
 }
 
+// Query returns the beers with the specified offset and limit.
 func (s service) Query(ctx context.Context, offset, limit int, filters map[string]interface{}) ([]BeerItem, error) {
 	items, err := s.repo.Query(ctx, offset, limit, filters)
 	if err != nil {

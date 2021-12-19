@@ -41,18 +41,21 @@ func NewRepository(cc protos.CurrencyClient,db *dbcontext.DB, logger log.Logger)
 	return repository{cc,db, logger}
 }
 
+// Get returns the beer with the specified user ID.
 func (r repository) Get(ctx context.Context, id int) (entity.Beer, error) {
 	var beer entity.Beer
 	err := r.db.With(ctx).Select().Model(id, &beer)
 	return beer, err
 }
 
+// Count returns the number of beers.
 func (r repository) Count(ctx context.Context) (int, error) {
 	var count int
 	err := r.db.With(ctx).Select("COUNT(*)").From("beers").Row(&count)
 	return count, err
 }
 
+// Query returns the list of beers with the given offset and limit.
 func (r repository) Query(ctx context.Context, offset, limit int, filters map[string]interface{}) ([]entity.Beer, error) {
 	var beers []entity.Beer
 	err := r.db.With(ctx).
@@ -65,6 +68,7 @@ func (r repository) Query(ctx context.Context, offset, limit int, filters map[st
 	return beers, err
 }
 
+// Create saves a new beer in the storage.
 func (r repository) Create(ctx context.Context, beer entity.Beer) (int, error) {
 	if err := r.db.With(ctx).Model(&beer).Insert(); err != nil {
 		if pqErr, ok := err.(*pq.Error); ok {
@@ -80,6 +84,7 @@ func (r repository) Create(ctx context.Context, beer entity.Beer) (int, error) {
 	return beer.ID, nil
 }
 
+// GetPrice returns the price of beer box relative to currency
 func (r repository) GetPrice(ctx context.Context, id int, srcCurrency, dstCurrency string) (float32, error) {
 	var err error
 	if _, err = r.Get(ctx, id); err != nil {
