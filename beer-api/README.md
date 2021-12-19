@@ -5,7 +5,7 @@
 [![Code Coverage](https://codecov.io/gh/qiangxue/go-rest-api/branch/master/graph/badge.svg)](https://app.codecov.io/gh/jkarlos000/technical-challenge)
 [![Go Report](https://goreportcard.com/badge/github.com/qiangxue/go-rest-api)](https://goreportcard.com/report/github.com/qiangxue/go-rest-api)
 
-Go based Beer API built using the Ozzo Routing.
+Go based Beer API built using the Ozzo library.
 
 ## Documentation
 
