@@ -112,6 +112,7 @@ func buildHandler(logger log.Logger, db *dbcontext.DB, cfg *config.Config, conn 
 
 	rg := router.Group("/v1")
 
+	// register all routes
 	beer.RegisterHandlers(rg.Group(""),
 		beer.NewService(beer.NewRepository(protos.NewCurrencyClient(conn), db, logger), logger),
 		logger,
