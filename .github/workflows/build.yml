@@ -1,0 +1,168 @@
+name: build
+on: [push, pull_request]
+jobs:
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:10.8
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
+        ports:
+          - 5432/tcp
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+
+    steps:
+
+      - uses: actions/checkout@v2 
+
+      - uses: dorny/paths-filter@v2
+        id: filter
+        with: 
+          filters: |
+            beer-api:
+              - 'beer-api/**'
+            currency:
+              - 'currency/**'
+      
+      - name: Set up Go 1.16
+        uses: actions/setup-go@v1
+        with:
+          go-version: 1.16
+        id: go
+      
+      - name: Creating database
+        if: steps.filter.outputs.currency == 'true'
+        working-directory: currency
+        run: |
+          PGPASSWORD=postgres psql -U postgres -tc "SELECT 'CREATE DATABASE currency' WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'currency')"
+        
+    - name: Creating database
+        if: steps.filter.outputs.beer-api == 'true'
+        working-directory: beer-api
+        run: |
+          PGPASSWORD=postgres psql -U postgres -tc "SELECT 'CREATE DATABASE beer' WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'beer')"
+      
+      - name: Change work directory if currency pushed
+        if: steps.filter.outputs.currency == 'true'
+        working-directory: currency
+        run: |
+          echo "GOPATH=$(go env GOPATH)" >> $GITHUB_ENV
+          echo "$(go env GOPATH)/bin" >> $GITHUB_PATH
+        shell: bash
+          
+      - name: Change work directory if beer-api pushed
+        if: steps.filter.outputs.beer-api == 'true'
+        working-directory: beer-api
+        run: |
+          echo "GOPATH=$(go env GOPATH)" >> $GITHUB_ENV
+          echo "$(go env GOPATH)/bin" >> $GITHUB_PATH
+        shell: bash
+
+      - name: Check out code into the Go module directory
+        if: steps.filter.outputs.currency == 'true'
+        working-directory: currency
+        uses: actions/checkout@v1
+      
+      - name: Check out code into the Go module directory
+        if: steps.filter.outputs.beer-api == 'true'
+        working-directory: beer-api
+        uses: actions/checkout@v1
+
+      - name: Get dependencies
+        if: steps.filter.outputs.currency == 'true'
+        working-directory: currency
+        run: |
+          go mod download
+          go mod verify
+          go get golang.org/x/tools/cmd/cover
+          go get github.com/mattn/goveralls
+          go get golang.org/x/lint/golint
+          go get google.golang.org/grpc
+          GO111MODULE=off go get -u github.com/go-swagger/go-swagger/cmd/swagger
+          GO111MODULE=off go get -u github.com/maxbrunsfeld/counterfeiter
+      
+      - name: Get dependencies
+        if: steps.filter.outputs.beer-api == 'true'
+        working-directory: beer-api
+        run: |
+          go mod download
+          go mod verify
+          go get golang.org/x/tools/cmd/cover
+          go get github.com/mattn/goveralls
+          go get golang.org/x/lint/golint
+          go get google.golang.org/grpc
+          GO111MODULE=off go get -u github.com/go-swagger/go-swagger/cmd/swagger
+          GO111MODULE=off go get -u github.com/maxbrunsfeld/counterfeiter
+
+
+      - name: Run go lint
+        if: steps.filter.outputs.currency == 'true'
+        working-directory: currency
+        run: make lint
+
+      - name: Run go lint
+        if: steps.filter.outputs.beer-api == 'true'
+        working-directory: beer-api
+        run: make lint
+      
+      - name: Run go lint
+        if: steps.filter.outputs.currency == 'true'
+        working-directory: currency
+        run: go generate ./...
+
+      - name: Run go lint
+        if: steps.filter.outputs.beer-api == 'true'
+        working-directory: beer-api
+        run: go generate ./...
+
+      - name: Build
+        if: steps.filter.outputs.currency == 'true'
+        working-directory: currency
+        run: make build
+      
+      - name: Build
+        if: steps.filter.outputs.beer-api == 'true'
+        working-directory: beer-api
+        run: make build
+
+      - name: Test
+        if: steps.filter.outputs.currency == 'true'
+        working-directory: currency
+        env:
+          APP_DSN: postgres://127.0.0.1:${{ job.services.postgres.ports[5432] }}/currency?sslmode=disable&user=postgres&password=postgres
+        run: |
+          make migrate
+          make test-cover
+      
+      - name: Test
+        if: steps.filter.outputs.beer-api == 'true'
+        working-directory: beer-api
+        env:
+          APP_DSN: postgres://127.0.0.1:${{ job.services.postgres.ports[5432] }}/beer?sslmode=disable&user=postgres&password=postgres
+        run: |
+          make migrate
+          make test-cover
+
+      - name: Upload coverage to Codecov
+        if: steps.filter.outputs.currency == 'true'
+        working-directory: currency
+        uses: codecov/codecov-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          file: ./coverage-all.out
+          run: bash <(curl -s https://codecov.io/bash)
+      
+      - name: Upload coverage to Codecov
+        if: steps.filter.outputs.beer-api == 'true'
+        working-directory: beer-api
+        uses: codecov/codecov-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          file: ./coverage-all.out
+          run:  bash <(curl -s https://codecov.io/bash)

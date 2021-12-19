@@ -29,6 +29,13 @@ func TestInternalServerError(t *testing.T) {
 	res = InternalServerError("")
 	assert.NotEmpty(t, res.Error())
 }
+func TestStatusConflictError(t *testing.T) {
+	res := StatusConflictError("test")
+	assert.Equal(t, http.StatusConflict, res.StatusCode())
+	assert.Equal(t, "test", res.Error())
+	res = StatusConflictError("")
+	assert.NotEmpty(t, res.Error())
+}
 
 func TestNotFound(t *testing.T) {
 	res := NotFound("test")
