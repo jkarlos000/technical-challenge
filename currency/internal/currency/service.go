@@ -9,6 +9,15 @@ import (
 	"time"
 )
 
+//go:generate go run github.com/maxbrunsfeld/counterfeiter/v6 -generate
+
+//counterfeiter:generate -o currencytesting/fake_repository.gen.go . Repository
+//counterfeiter:generate -o currencytesting/fake_service.gen.go github.com/jkarlos000/technical-challenge/currency/api/proto/v1.CurrencyServer
+//counterfeiter:generate -o currencytesting/fake_streamcurrencyserver.gen.go github.com/jkarlos000/technical-challenge/currency/api/proto/v1.Currency_GetPriceStreamServer
+
+// api fakes
+//counterfeiter:generate -o ../test/apifakes/beer-apifakes github.com/go-ozzo/ozzo-dbx.Builder
+
 type service struct {
 	proto.UnimplementedCurrencyServer
 	repo   Repository

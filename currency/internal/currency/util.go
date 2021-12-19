@@ -2,6 +2,7 @@ package currency
 
 import (
 	"context"
+	"errors"
 	"github.com/jkarlos000/technical-challenge/currency/internal/entity"
 	"reflect"
 	"time"
@@ -93,6 +94,9 @@ func (r repository) addCurrency(ctx context.Context, base, destination string) e
 	var currencyA entity.Currency
 	var currencyB entity.Currency
 	var err error
+	if base == "USD" && destination == "USD" {
+		return errors.New("no data for this currency")
+	}
 	if currencyA, err = r.Get(ctx, "USD", base); err != nil {
 		return err
 	}

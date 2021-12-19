@@ -22,8 +22,6 @@ type Repository interface {
 	Create(ctx context.Context, currency entity.Currency) error
 	// Update updates the currencies relation with given base and destination in the storage.
 	Update(ctx context.Context, currency entity.Currency) error
-	// Delete removes the currencies relation with given base and destination from the storage.
-	Delete(ctx context.Context, id int) error
 	// MonitorRates update every 30 minutes the actual rates values.
 	MonitorRates(ctx context.Context, interval time.Duration) chan struct{}
 }
@@ -225,13 +223,14 @@ func (r repository) Get(ctx context.Context, base, destination string) (entity.C
 	err := q.One(&currency)
 
 	if len(currency.Base) == 0 && len(currency.Destination) == 0 {
-		if err := r.addCurrency(ctx, base, destination); err == nil {
+		if err = r.addCurrency(ctx, base, destination); err == nil {
 			newCurr, er := r.Get(ctx, base, destination)
 			if er != nil {
 				return entity.Currency{}, er
 			}
 			return newCurr, nil
 		}
+		return entity.Currency{}, err
 	}
 	if  int(time.Now().Sub(*currency.UpdatedAt).Minutes()) >= 30 {
 		if base != "USD" {
@@ -262,13 +261,12 @@ func (r repository) Update(ctx context.Context, currency entity.Currency) error 
 	return r.db.With(ctx).Model(&currency).Exclude("CreatedAt").Update()
 }
 
-func (r repository) Delete(ctx context.Context, id int) error {
-	panic("implement me")
-}
-
 // MonitorRates checks the rates in the CurrencyLayer, actual limit of 250 request by day.
 func (r repository) MonitorRates(ctx context.Context, interval time.Duration) chan struct{} {
 	ret := make(chan struct{})
+	if len(ApiKey) == 0 {
+		return ret
+	}
 	url := Url + ApiKey
 
 	go func() {
