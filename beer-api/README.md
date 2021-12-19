@@ -124,4 +124,3 @@ command,
 ```shell
 ./server -config=./config/prod.yml
 ```
-
