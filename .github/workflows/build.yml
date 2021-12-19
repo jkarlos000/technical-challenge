@@ -30,10 +30,10 @@ jobs:
             currency:
               - 'currency/**'
       
-      - name: Set up Go 1.16
+      - name: Set up Go 1.13
         uses: actions/setup-go@v1
         with:
-          go-version: 1.16
+          go-version: 1.13
         id: go
 
       - name: Creating database
