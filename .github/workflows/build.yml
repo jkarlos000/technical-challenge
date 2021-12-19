@@ -64,16 +64,6 @@ jobs:
           echo "$(go env GOPATH)/bin" >> $GITHUB_PATH
         shell: bash
 
-      - name: Check out code into the Go module directory
-        if: steps.filter.outputs.currency == 'true'
-        working-directory: currency
-        uses: actions/checkout@v1
-      
-      - name: Check out code into the Go module directory
-        if: steps.filter.outputs.beer-api == 'true'
-        working-directory: beer-api
-        uses: actions/checkout@v1
-
       - name: Get dependencies
         if: steps.filter.outputs.currency == 'true'
         working-directory: currency
