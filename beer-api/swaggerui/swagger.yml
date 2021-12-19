@@ -1,0 +1,353 @@
+basePath: /v1
+consumes:
+- application/json
+definitions:
+  BeerBox:
+    properties:
+      price_total:
+        format: double
+        type: number
+        x-go-name: PriceTotal
+    title: BeerBox represents the data about a price of beer box.
+    type: object
+    x-go-package: github.com/jkarlos000/technical-challenge/beer-api/internal/beer
+  BeerItem:
+    properties:
+      brewery:
+        example: Kross
+        type: string
+        x-go-name: Brewery
+      country:
+        example: Chile
+        type: string
+        x-go-name: Country
+      currency:
+        example: EUR
+        type: string
+        x-go-name: Currency
+      id:
+        example: 1
+        format: int64
+        type: integer
+        x-go-name: ID
+      name:
+        example: Golden
+        type: string
+        x-go-name: Name
+      price:
+        example: 10.5
+        format: float
+        type: number
+        x-go-name: Price
+    required:
+    - id
+    - name
+    - brewery
+    - country
+    - price
+    - currency
+    title: BeerItem represents the data about a beer.
+    type: object
+    x-go-package: github.com/jkarlos000/technical-challenge/beer-api/internal/beer
+  ErrorResponse:
+    properties:
+      details:
+        type: object
+        x-go-name: Details
+      message:
+        type: string
+        x-go-name: Message
+      status:
+        format: int64
+        type: integer
+        x-go-name: Status
+    title: ErrorResponse is the response that represents an error.
+    type: object
+    x-go-package: github.com/jkarlos000/technical-challenge/beer-api/internal/errors
+host: localhost:8080
+info:
+  contact:
+    email: ugaetea@falabella.cl
+  description: Esta API esta diseñada para ser una prueba para los nuevos candidatos
+    al equipo.
+  title: API Falabella FIF
+  version: 1.0.0
+paths:
+  /beers:
+    get:
+      consumes:
+      - application/json
+      description: Lista todas las cervezas que se encuentran en la base de datos
+      operationId: SearchBeers
+      produces:
+      - application/json
+      responses:
+        "200":
+          $ref: '#/responses/beersItemResponse'
+      schemes:
+      - http
+      - https
+      summary: Lista todas las cervezas
+      tags:
+      - cerveza
+    post:
+      consumes:
+      - application/json
+      description: Ingresa una nueva cerveza
+      operationId: AddBeers
+      parameters:
+      - description: Parameters to create an Admin
+        in: body
+        name: Body
+        schema:
+          allOf:
+          - properties:
+              brewery:
+                type: string
+                x-go-name: Brewery
+              country:
+                type: string
+                x-go-name: Country
+              currency:
+                type: string
+                x-go-name: Currency
+              name:
+                type: string
+                x-go-name: Name
+              price:
+                format: float
+                type: number
+                x-go-name: Price
+            type: object
+      produces:
+      - application/json
+      responses:
+        "201":
+          $ref: '#/responses/beerItemCreatedResponse'
+        "400":
+          $ref: '#/responses/badRequest'
+        "409":
+          $ref: '#/responses/conflictError'
+      schemes:
+      - http
+      - https
+      summary: Ingresa una nueva cerveza
+      tags:
+      - cerveza
+  /beers/{beerID}:
+    get:
+      consumes:
+      - application/json
+      description: Busca una cerveza por su Id
+      operationId: SearchBeerById
+      parameters:
+      - description: Busca una cerveza por su Id
+        in: path
+        name: beerID
+        required: true
+        type: string
+        x-go-name: ID
+      produces:
+      - application/json
+      responses:
+        "200":
+          $ref: '#/responses/beerItemResponse'
+        "404":
+          $ref: '#/responses/notFound'
+      schemes:
+      - http
+      - https
+      summary: Lista el detalle de la marca de cervezas
+      tags:
+      - cerveza
+  /beers/{beerID}/boxprice:
+    get:
+      consumes:
+      - application/json
+      description: Obtiene el precio de una caja de cerveza por su Id
+      operationId: BoxBeerPriceById
+      parameters:
+      - description: Busca una cerveza por su Id
+        in: path
+        name: beerID
+        required: true
+        type: string
+        x-go-name: ID
+      - description: Tipo de moneda con la que pagará
+        in: query
+        name: currency
+        type: string
+        x-go-name: Currency
+      - default: 6
+        description: La cantidad de cervezas a comprar
+        format: int64
+        in: query
+        name: quantity
+        type: integer
+        x-go-name: Quantity
+      produces:
+      - application/json
+      responses:
+        "200":
+          $ref: '#/responses/beerBoxResponse'
+        "404":
+          $ref: '#/responses/notFound'
+      schemes:
+      - http
+      - https
+      summary: Lista el precio de una caja de cervezas de una marca
+      tags:
+      - cerveza
+produces:
+- application/json
+responses:
+  badRequest:
+    description: Request invalida
+    schema:
+      $ref: '#/definitions/ErrorResponse'
+  beerBoxResponse:
+    description: Operacion exitosa
+    schema:
+      allOf:
+      - $ref: '#/definitions/BeerBox'
+  beerItemCreatedResponse:
+    description: Cerveza creada
+    schema:
+      allOf:
+      - properties:
+          brewery:
+            example: Kross
+            type: string
+            x-go-name: Brewery
+          country:
+            example: Chile
+            type: string
+            x-go-name: Country
+          currency:
+            example: EUR
+            type: string
+            x-go-name: Currency
+          id:
+            example: 1
+            format: int64
+            type: integer
+            x-go-name: ID
+          name:
+            example: Golden
+            type: string
+            x-go-name: Name
+          price:
+            example: 10.5
+            format: float
+            type: number
+            x-go-name: Price
+        required:
+        - id
+        - name
+        - brewery
+        - country
+        - price
+        - currency
+        type: object
+  beerItemResponse:
+    description: Operacion exitosa
+    schema:
+      allOf:
+      - properties:
+          brewery:
+            example: Kross
+            type: string
+            x-go-name: Brewery
+          country:
+            example: Chile
+            type: string
+            x-go-name: Country
+          currency:
+            example: EUR
+            type: string
+            x-go-name: Currency
+          id:
+            example: 1
+            format: int64
+            type: integer
+            x-go-name: ID
+          name:
+            example: Golden
+            type: string
+            x-go-name: Name
+          price:
+            example: 10.5
+            format: float
+            type: number
+            x-go-name: Price
+        required:
+        - id
+        - name
+        - brewery
+        - country
+        - price
+        - currency
+        type: object
+  beersItemResponse:
+    description: Operacion exitosa
+    schema:
+      allOf:
+      - properties:
+          items:
+            type: object
+            x-go-name: Items
+          page:
+            format: int64
+            type: integer
+            x-go-name: Page
+          page_count:
+            format: int64
+            type: integer
+            x-go-name: PageCount
+          per_page:
+            format: int64
+            type: integer
+            x-go-name: PerPage
+          total_count:
+            format: int64
+            type: integer
+            x-go-name: TotalCount
+        type: object
+      - properties:
+          items:
+            items:
+              $ref: '#/definitions/BeerItem'
+            type: array
+            x-go-name: Items
+        type: object
+  conflictError:
+    description: El ID de la cerveza ya existe
+    schema:
+      $ref: '#/definitions/ErrorResponse'
+  forbidden:
+    description: Forbidden creates a new error response representing an authorization
+      failure (HTTP 403)
+    schema:
+      $ref: '#/definitions/ErrorResponse'
+  internalServerError:
+    description: InternalServerError creates a new error response representing an
+      internal server error (HTTP 500)
+    schema:
+      $ref: '#/definitions/ErrorResponse'
+  invalidInput:
+    description: InvalidInput creates a new error response representing a data validation
+      error (HTTP 400).
+    schema:
+      $ref: '#/definitions/ErrorResponse'
+  notFound:
+    description: El Id de la cerveza no existe
+    schema:
+      $ref: '#/definitions/ErrorResponse'
+  unauthorized:
+    description: Unauthorized creates a new error response representing an authentication/authorization
+      failure (HTTP 401)
+    schema:
+      $ref: '#/definitions/ErrorResponse'
+schemes:
+- http
+swagger: "2.0"

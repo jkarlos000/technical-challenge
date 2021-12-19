@@ -37,18 +37,6 @@ type FakeRepository struct {
 		result1 int
 		result2 error
 	}
-	DeleteStub        func(context.Context, int) error
-	deleteMutex       sync.RWMutex
-	deleteArgsForCall []struct {
-		arg1 context.Context
-		arg2 int
-	}
-	deleteReturns struct {
-		result1 error
-	}
-	deleteReturnsOnCall map[int]struct {
-		result1 error
-	}
 	GetStub        func(context.Context, int) (entity.Beer, error)
 	getMutex       sync.RWMutex
 	getArgsForCall []struct {
@@ -94,18 +82,6 @@ type FakeRepository struct {
 	queryReturnsOnCall map[int]struct {
 		result1 []entity.Beer
 		result2 error
-	}
-	UpdateStub        func(context.Context, entity.Beer) error
-	updateMutex       sync.RWMutex
-	updateArgsForCall []struct {
-		arg1 context.Context
-		arg2 entity.Beer
-	}
-	updateReturns struct {
-		result1 error
-	}
-	updateReturnsOnCall map[int]struct {
-		result1 error
 	}
 	invocations      map[string][][]interface{}
 	invocationsMutex sync.RWMutex
@@ -238,68 +214,6 @@ func (fake *FakeRepository) CreateReturnsOnCall(i int, result1 int, result2 erro
 		result1 int
 		result2 error
 	}{result1, result2}
-}
-
-func (fake *FakeRepository) Delete(arg1 context.Context, arg2 int) error {
-	fake.deleteMutex.Lock()
-	ret, specificReturn := fake.deleteReturnsOnCall[len(fake.deleteArgsForCall)]
-	fake.deleteArgsForCall = append(fake.deleteArgsForCall, struct {
-		arg1 context.Context
-		arg2 int
-	}{arg1, arg2})
-	stub := fake.DeleteStub
-	fakeReturns := fake.deleteReturns
-	fake.recordInvocation("Delete", []interface{}{arg1, arg2})
-	fake.deleteMutex.Unlock()
-	if stub != nil {
-		return stub(arg1, arg2)
-	}
-	if specificReturn {
-		return ret.result1
-	}
-	return fakeReturns.result1
-}
-
-func (fake *FakeRepository) DeleteCallCount() int {
-	fake.deleteMutex.RLock()
-	defer fake.deleteMutex.RUnlock()
-	return len(fake.deleteArgsForCall)
-}
-
-func (fake *FakeRepository) DeleteCalls(stub func(context.Context, int) error) {
-	fake.deleteMutex.Lock()
-	defer fake.deleteMutex.Unlock()
-	fake.DeleteStub = stub
-}
-
-func (fake *FakeRepository) DeleteArgsForCall(i int) (context.Context, int) {
-	fake.deleteMutex.RLock()
-	defer fake.deleteMutex.RUnlock()
-	argsForCall := fake.deleteArgsForCall[i]
-	return argsForCall.arg1, argsForCall.arg2
-}
-
-func (fake *FakeRepository) DeleteReturns(result1 error) {
-	fake.deleteMutex.Lock()
-	defer fake.deleteMutex.Unlock()
-	fake.DeleteStub = nil
-	fake.deleteReturns = struct {
-		result1 error
-	}{result1}
-}
-
-func (fake *FakeRepository) DeleteReturnsOnCall(i int, result1 error) {
-	fake.deleteMutex.Lock()
-	defer fake.deleteMutex.Unlock()
-	fake.DeleteStub = nil
-	if fake.deleteReturnsOnCall == nil {
-		fake.deleteReturnsOnCall = make(map[int]struct {
-			result1 error
-		})
-	}
-	fake.deleteReturnsOnCall[i] = struct {
-		result1 error
-	}{result1}
 }
 
 func (fake *FakeRepository) Get(arg1 context.Context, arg2 int) (entity.Beer, error) {
@@ -501,68 +415,6 @@ func (fake *FakeRepository) QueryReturnsOnCall(i int, result1 []entity.Beer, res
 	}{result1, result2}
 }
 
-func (fake *FakeRepository) Update(arg1 context.Context, arg2 entity.Beer) error {
-	fake.updateMutex.Lock()
-	ret, specificReturn := fake.updateReturnsOnCall[len(fake.updateArgsForCall)]
-	fake.updateArgsForCall = append(fake.updateArgsForCall, struct {
-		arg1 context.Context
-		arg2 entity.Beer
-	}{arg1, arg2})
-	stub := fake.UpdateStub
-	fakeReturns := fake.updateReturns
-	fake.recordInvocation("Update", []interface{}{arg1, arg2})
-	fake.updateMutex.Unlock()
-	if stub != nil {
-		return stub(arg1, arg2)
-	}
-	if specificReturn {
-		return ret.result1
-	}
-	return fakeReturns.result1
-}
-
-func (fake *FakeRepository) UpdateCallCount() int {
-	fake.updateMutex.RLock()
-	defer fake.updateMutex.RUnlock()
-	return len(fake.updateArgsForCall)
-}
-
-func (fake *FakeRepository) UpdateCalls(stub func(context.Context, entity.Beer) error) {
-	fake.updateMutex.Lock()
-	defer fake.updateMutex.Unlock()
-	fake.UpdateStub = stub
-}
-
-func (fake *FakeRepository) UpdateArgsForCall(i int) (context.Context, entity.Beer) {
-	fake.updateMutex.RLock()
-	defer fake.updateMutex.RUnlock()
-	argsForCall := fake.updateArgsForCall[i]
-	return argsForCall.arg1, argsForCall.arg2
-}
-
-func (fake *FakeRepository) UpdateReturns(result1 error) {
-	fake.updateMutex.Lock()
-	defer fake.updateMutex.Unlock()
-	fake.UpdateStub = nil
-	fake.updateReturns = struct {
-		result1 error
-	}{result1}
-}
-
-func (fake *FakeRepository) UpdateReturnsOnCall(i int, result1 error) {
-	fake.updateMutex.Lock()
-	defer fake.updateMutex.Unlock()
-	fake.UpdateStub = nil
-	if fake.updateReturnsOnCall == nil {
-		fake.updateReturnsOnCall = make(map[int]struct {
-			result1 error
-		})
-	}
-	fake.updateReturnsOnCall[i] = struct {
-		result1 error
-	}{result1}
-}
-
 func (fake *FakeRepository) Invocations() map[string][][]interface{} {
 	fake.invocationsMutex.RLock()
 	defer fake.invocationsMutex.RUnlock()
@@ -570,16 +422,12 @@ func (fake *FakeRepository) Invocations() map[string][][]interface{} {
 	defer fake.countMutex.RUnlock()
 	fake.createMutex.RLock()
 	defer fake.createMutex.RUnlock()
-	fake.deleteMutex.RLock()
-	defer fake.deleteMutex.RUnlock()
 	fake.getMutex.RLock()
 	defer fake.getMutex.RUnlock()
 	fake.getPriceMutex.RLock()
 	defer fake.getPriceMutex.RUnlock()
 	fake.queryMutex.RLock()
 	defer fake.queryMutex.RUnlock()
-	fake.updateMutex.RLock()
-	defer fake.updateMutex.RUnlock()
 	copiedInvocations := map[string][][]interface{}{}
 	for key, value := range fake.invocations {
 		copiedInvocations[key] = value

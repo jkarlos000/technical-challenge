@@ -9,6 +9,7 @@ import (
 	"github.com/go-ozzo/ozzo-routing/v2"
 	"github.com/go-ozzo/ozzo-routing/v2/content"
 	"github.com/go-ozzo/ozzo-routing/v2/cors"
+	f "github.com/go-ozzo/ozzo-routing/v2/file"
 	"github.com/golang-migrate/migrate/v4"
 	_ "github.com/golang-migrate/migrate/v4/database/postgres"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
@@ -18,6 +19,7 @@ import (
 	"github.com/jkarlos000/technical-challenge/beer-api/internal/healthcheck"
 	"github.com/jkarlos000/technical-challenge/beer-api/pkg/accesslog"
 	"github.com/jkarlos000/technical-challenge/beer-api/pkg/dbcontext"
+	_ "github.com/jkarlos000/technical-challenge/beer-api/pkg/doc"
 	"github.com/jkarlos000/technical-challenge/beer-api/pkg/log"
 	protos "github.com/jkarlos000/technical-challenge/currency/api/proto/v1"
 	_ "github.com/lib/pq"
@@ -26,6 +28,8 @@ import (
 	"os"
 	"time"
 )
+
+//go:generate swagger generate spec -o ../../swaggerui/swagger.yml
 
 // Version indicates the current version of the application.
 var Version = "1.0.0"
@@ -112,6 +116,13 @@ func buildHandler(logger log.Logger, db *dbcontext.DB, cfg *config.Config, conn 
 		beer.NewService(beer.NewRepository(protos.NewCurrencyClient(conn), db, logger), logger),
 		logger,
 	)
+
+	// Swaggerui - serve index file
+	router.Get("/swaggerui", f.Content("swaggerui/index.html"))
+
+	router.Get("/*", f.Server(f.PathMap{
+		"/swaggerui":     "/swaggerui/",
+	}))
 
 	return router
 }

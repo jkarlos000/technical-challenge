@@ -53,7 +53,10 @@ func (m CreateBeerRequest) Validate() error {
 }
 
 // BeerBox represents the data about a price of beer box.
+//
+// swagger:model
 type BeerBox struct {
+	//
 	PriceTotal float64 `json:"price_total"`
 }
 

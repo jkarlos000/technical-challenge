@@ -70,7 +70,7 @@ func (r repository) Create(ctx context.Context, beer entity.Beer) (int, error) {
 		if pqErr, ok := err.(*pq.Error); ok {
 			switch pqErr.Code.Name() {
 			case "unique_violation":
-				return 0, errors.BadRequest("The request is already saved")
+				return 0, errors.BadRequest("The request is already saved in database")
 			default:
 				return 0, err
 			}
@@ -91,7 +91,8 @@ func (r repository) GetPrice(ctx context.Context, id int, srcCurrency, dstCurren
 	}
 	var rate *protos.Response
 	if rate, err = r.cc.GetPrice(ctx, rr); err != nil {
-		return 0.0, err
+		r.logger.Error(err)
+		return 0.0, errors.InternalServerError("")
 	}
 	return rate.Rate, nil
 }

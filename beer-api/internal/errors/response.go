@@ -34,6 +34,17 @@ func InternalServerError(msg string) ErrorResponse {
 	}
 }
 
+// StatusConflictError creates a new error response representing conflict server error (HTTP 409)
+func StatusConflictError(msg string) ErrorResponse {
+	if msg == "" {
+		msg = "We encountered a conflict while processing your request."
+	}
+	return ErrorResponse{
+		Status:  http.StatusConflict,
+		Message: msg,
+	}
+}
+
 // NotFound creates a new error response representing a resource-not-found error (HTTP 404)
 func NotFound(msg string) ErrorResponse {
 	if msg == "" {

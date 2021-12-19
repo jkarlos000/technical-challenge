@@ -1,0 +1,154 @@
+basePath: /v1
+consumes:
+- application/json
+definitions:
+  Beer:
+    properties:
+      brewery:
+        example: Kross
+        type: string
+        x-go-name: Brewery
+      country:
+        example: Chile
+        type: string
+        x-go-name: Country
+      currency:
+        example: EUR
+        type: string
+        x-go-name: Currency
+      id:
+        example: 1
+        format: int64
+        type: integer
+        x-go-name: ID
+      name:
+        example: Golden
+        type: string
+        x-go-name: Name
+      price:
+        example: 10.5
+        format: float
+        type: number
+        x-go-name: Price
+    required:
+    - id
+    - name
+    - brewery
+    - country
+    - price
+    - currency
+    title: Beer represents a beer record.
+    type: object
+    x-go-package: github.com/jkarlos000/technical-challenge/beer-api/internal/entity
+  ErrorResponse:
+    properties:
+      details:
+        type: object
+        x-go-name: Details
+      message:
+        type: string
+        x-go-name: Message
+      status:
+        format: int64
+        type: integer
+        x-go-name: Status
+    title: ErrorResponse is the response that represents an error.
+    type: object
+    x-go-package: github.com/jkarlos000/technical-challenge/beer-api/internal/errors
+host: localhost:8080
+info:
+  contact:
+    email: ugaetea@falabella.cl
+  description: Esta API esta diseñada para ser una prueba para los nuevos candidatos
+    al equipo.
+  title: API Falabella FIF
+  version: 1.0.0
+paths:
+  /beers:
+    get:
+      consumes:
+      - application/json
+      description: |-
+        Lista todas las cervezas
+        Lista todas las cervezas que se encuentran en la base de datos
+      operationId: searchBeers
+      produces:
+      - application/json
+      responses:
+        "200":
+          $ref: '#/responses/BeerItem'
+      schemes:
+      - http
+      - https
+      tags:
+      - cerveza
+  /beers/{beerID}:
+    get:
+      consumes:
+      - application/json
+      description: Get returns the admin with the specified the admin ID.
+      operationId: SearchBeerById
+      parameters:
+      - description: The ID of BeerItem entity from system
+        in: path
+        name: beerID
+        required: true
+        type: string
+        x-go-name: ID
+      produces:
+      - application/json
+      responses:
+        "200":
+          $ref: '#/responses/beerItemResponse'
+        "404":
+          $ref: '#/responses/notFound'
+      schemes:
+      - http
+      - https
+      security:
+      - Bearer:
+        - '[]'
+      summary: Lista el detalle de la marca de cervezas
+      tags:
+      - cerveza
+produces:
+- application/json
+responses:
+  badRequest:
+    description: BadRequest creates a new error response representing a bad request
+      (HTTP 400)
+    schema:
+      $ref: '#/definitions/ErrorResponse'
+  beerItemResponse:
+    description: BeerItem rica cerveza..
+    schema:
+      allOf:
+      - $ref: '#/definitions/Beer'
+  forbidden:
+    description: Forbidden creates a new error response representing an authorization
+      failure (HTTP 403)
+    schema:
+      $ref: '#/definitions/ErrorResponse'
+  internalServerError:
+    description: InternalServerError creates a new error response representing an
+      internal server error (HTTP 500)
+    schema:
+      $ref: '#/definitions/ErrorResponse'
+  invalidInput:
+    description: InvalidInput creates a new error response representing a data validation
+      error (HTTP 400).
+    schema:
+      $ref: '#/definitions/ErrorResponse'
+  notFound:
+    description: NotFound creates a new error response representing a resource-not-found
+      error (HTTP 404)
+    schema:
+      $ref: '#/definitions/ErrorResponse'
+  unauthorized:
+    description: Unauthorized creates a new error response representing an authentication/authorization
+      failure (HTTP 401)
+    schema:
+      $ref: '#/definitions/ErrorResponse'
+schemes:
+- http
+swagger: "2.0"

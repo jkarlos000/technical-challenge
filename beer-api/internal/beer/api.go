@@ -18,7 +18,6 @@ import (
 // api fakes
 //counterfeiter:generate -o internal/test/apifakes/beer-apifakes github.com/jkarlos000/technical-challenge/currency/api/proto/v1.CurrencyClient
 
-
 // RegisterHandlers sets up the routing of the HTTP handlers.
 func RegisterHandlers(r *routing.RouteGroup, service Service, logger log.Logger) {
 	res := resource{service, logger}
@@ -34,6 +33,23 @@ type resource struct {
 	logger  log.Logger
 }
 
+// swagger:route GET /beers/{beerID} cerveza SearchBeerById
+//
+// Lista el detalle de la marca de cervezas
+//
+// Busca una cerveza por su Id
+//
+//     Consumes:
+//     - application/json
+//
+//     Produces:
+//     - application/json
+//
+//     Schemes: http, https
+//
+//     Responses:
+//       200: beerItemResponse
+//       404: notFound
 func (r resource) searchBeerById(c *routing.Context) error {
 	var id int
 	var err error
@@ -47,6 +63,23 @@ func (r resource) searchBeerById(c *routing.Context) error {
 	return c.Write(beer)
 }
 
+// swagger:route GET /beers/{beerID}/boxprice cerveza BoxBeerPriceById
+//
+// Lista el precio de una caja de cervezas de una marca
+//
+// Obtiene el precio de una caja de cerveza por su Id
+//
+//     Consumes:
+//     - application/json
+//
+//     Produces:
+//     - application/json
+//
+//     Schemes: http, https
+//
+//     Responses:
+//       200: beerBoxResponse
+//       404: notFound
 func (r resource) boxBeerPriceById(c *routing.Context) error {
 	currency := c.Query("currency")
 	quantity, _ := strconv.Atoi(c.Query("quantity"))
@@ -61,9 +94,10 @@ func (r resource) boxBeerPriceById(c *routing.Context) error {
 	return c.Write(beerBox)
 }
 
-// swagger:route GET /beers cerveza searchBeers
+// swagger:route GET /beers cerveza SearchBeers
 //
 // Lista todas las cervezas
+//
 // Lista todas las cervezas que se encuentran en la base de datos
 //
 //     Consumes:
@@ -75,7 +109,7 @@ func (r resource) boxBeerPriceById(c *routing.Context) error {
 //     Schemes: http, https
 //
 //     Responses:
-//       200: []BeerItem
+//       200: beersItemResponse
 func (r resource) searchBeers(c *routing.Context) error {
 	ctx := c.Request.Context()
 	filters := make(map[string]interface{})
@@ -95,6 +129,24 @@ func (r resource) searchBeers(c *routing.Context) error {
 	return c.Write(pages)
 }
 
+// swagger:route POST /beers cerveza AddBeers
+//
+// Ingresa una nueva cerveza
+//
+// Ingresa una nueva cerveza
+//
+//     Consumes:
+//     - application/json
+//
+//     Produces:
+//     - application/json
+//
+//     Schemes: http, https
+//
+//     Responses:
+//       201: beerItemCreatedResponse
+//       400: badRequest
+//       409: conflictError
 func (r resource) addBeers(c *routing.Context) error {
 	var input CreateBeerRequest
 	if err := c.Read(&input); err != nil {
