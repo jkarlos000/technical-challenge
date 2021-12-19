@@ -1,4 +1,4 @@
-# Microservices-test
+# Microservices-test - Technical Challenge
 
 [![GoDoc](https://godoc.org/github.com/qiangxue/go-rest-api?status.png)](https://bitbucket.org/lgaetecl/microservices-test/src/master/)
 [![Build Status](https://github.com/qiangxue/go-rest-api/workflows/build/badge.svg)](https://github.com/jkarlos000/technical-challenge/actions?query=workflow%3Abuild)
