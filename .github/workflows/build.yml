@@ -42,11 +42,11 @@ jobs:
         run: |
           PGPASSWORD=postgres psql -U postgres -tc "SELECT 'CREATE DATABASE currency' WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'currency')"
         
-    - name: Creating database
-        if: steps.filter.outputs.beer-api == 'true'
-        working-directory: beer-api
-        run: |
-          PGPASSWORD=postgres psql -U postgres -tc "SELECT 'CREATE DATABASE beer' WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'beer')"
+      - name: Creating database
+          if: steps.filter.outputs.beer-api == 'true'
+          working-directory: beer-api
+          run: |
+            PGPASSWORD=postgres psql -U postgres -tc "SELECT 'CREATE DATABASE beer' WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'beer')"
       
       - name: Change work directory if currency pushed
         if: steps.filter.outputs.currency == 'true'
