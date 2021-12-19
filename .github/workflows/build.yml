@@ -109,7 +109,7 @@ jobs:
         if: steps.filter.outputs.currency == 'true'
         working-directory: currency
         env:
-          APP_DSN: postgres://127.0.0.1:${{ job.services.postgres-currency.ports[54321] }}/currency?sslmode=disable&user=postgres&password=postgres
+          APP_DSN: postgres://127.0.0.1:54321/currency?sslmode=disable&user=postgres&password=postgres
         run: |
           make migrate
           make test-cover
