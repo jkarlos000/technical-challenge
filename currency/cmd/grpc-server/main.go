@@ -84,7 +84,7 @@ func main() {
 	// for this gRPC service
 	reflection.Register(gs)
 
-	// build GRPC server
+	// build GRPC server with specified port
 	address := fmt.Sprintf(":%v", cfg.ServerPort)
 
 	// create a TCP socket for inbound server connections
