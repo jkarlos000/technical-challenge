@@ -25,6 +25,7 @@ curl localhost:8080/beers
 The RESTful API server running at `http://127.0.0.1:8080`. It provides the following endpoints:
 
 * `GET /healthcheck`: a healthcheck service provided for health checking purpose (needed when implementing a server cluster)
+* `GET /swaggerui`: returns a ui for test Endpoints
 * `GET /v1/beers`: returns a paginated list of the beers
 * `GET /v1/beers/:id`: returns the detailed information of a beer
 * `POST /v1/beers`: creates a new beer
