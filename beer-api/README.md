@@ -29,7 +29,7 @@ The RESTful API server running at `http://127.0.0.1:8080`. It provides the follo
 * `GET /v1/beers`: returns a paginated list of the beers
 * `GET /v1/beers/:id`: returns the detailed information of a beer
 * `POST /v1/beers`: creates a new beer
-* `GET /v1/albums/:id/beerbox`: returns the price of beer box
+* `GET /v1/beers/:id/beerbox`: returns the price of beer box
 
 Try the URL `http://localhost:8080/healthcheck` in a browser, and you should see something like `"OK v1.0.0"` displayed.
 
